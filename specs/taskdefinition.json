@@ -2,8 +2,8 @@
     "family": ${FAMILY},
     "containerDefinitions": [
         {
-            "name": ${CONTAINER_NAME},
-            "image": ${APP_IMG}:${APP_TAG},
+            "name": "${CONTAINER_NAME}",
+            "image": "${APP_IMG}:${APP_TAG}",
             "portMappings": [
                 {
                     "containerPort": ${CONTAINER_PORT},
