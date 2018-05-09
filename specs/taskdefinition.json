@@ -1,5 +1,6 @@
 {
     "family": "${FAMILY}",
+    "networkMode": "awsvpc",
     "containerDefinitions": [
         {
             "name": "${CONTAINER_NAME}",
@@ -10,8 +11,13 @@
                     "hostPort": ${HOST_PORT}
                 }
             ],
-            "memory": ${MEMORY},
+
             "essential": true
         }
-    ]
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "${CPU}",
+    "memory": "${MEMORY}"
 }

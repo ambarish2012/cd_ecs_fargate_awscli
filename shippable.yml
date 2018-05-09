@@ -31,6 +31,7 @@ resources:
         HOST_PORT: 80
         CONTAINER_PORT: 80
         MEMORY: 1024
+        CPU: 1024
 
 jobs:
   - name: deploy_app_ecs_fargate
