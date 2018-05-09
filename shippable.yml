@@ -27,7 +27,7 @@ jobs:
     type: runSh
     steps:
       - IN: node_app_img_dh # defined here https://github.com/devops-recipes/node_app/blob/master/shippable.yml
-      - IN: cd_ecs_fargate_awscli_repo
+      - IN: cd_ecs_fargate_repo
         switch: off
       - IN: cd_ecs_fargate_config
         switch: off
