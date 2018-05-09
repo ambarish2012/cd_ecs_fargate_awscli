@@ -1,0 +1,6 @@
+{
+    "cluster": "${CLUSTER_NAME}",
+    "serviceName": "${SERVICE_NAME}",
+    "taskDefinition": "${FAMILY}",
+    "desiredCount": ${DESIRED_COUNT}
+}
