@@ -1,0 +1,52 @@
+resources:
+# REPO of Scripts
+  - name: cd_ecs_fargate_repo
+    type: gitRepo
+    integration: "drship_github"
+    versionTemplate:
+      sourceName: "ambarish2012/cd_ecs_fargate_awscli"
+      branch: master
+
+# AWS keys Config
+  - name: cd_ecs_fargate_config
+    type: cliConfig
+    integration: "drship_aws"
+
+  - name: cd_ecs_fargate_task_definition_params
+    type: params
+    versionTemplate:
+      params:
+        FAMILY: "ecs_fargate_task"
+        CONTAINER_NAME: "node_app_container"
+        HOST_PORT: 80
+        CONTAINER_PORT: 80
+        MEMORY: 1024
+
+jobs:
+  - name: deploy_app_ecs_fargate
+    type: runSh
+    steps:
+      - IN: node_app_img_dh # defined here https://github.com/devops-recipes/node_app/blob/master/shippable.yml
+      - IN: cd_ecs_fargate_awscli_repo
+        switch: off
+      - IN: cd_ecs_fargate_config
+        switch: off
+      - IN: cd_ecs_fargate_task_definition_params
+        switch: off
+      - TASK:
+          name: deploy_app
+          script:
+            - REPO_DIR=$(shipctl get_resource_state "cd_ecs_fargate_awscli_repo")
+            - pushd $REPO_DIR
+            - cd specs
+            - export APP_IMG=$(shipctl get_resource_version_key node_app_img_dh sourceName)
+            - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
+            - shipctl replace taskdefinition.json
+            - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
+            - REVISION=$(cat output.json | jq '.taskDefinition.revision')
+            - echo $REVISION
+            - popd
+    flags:
+      - cd
+      - awscli
+      - fargate

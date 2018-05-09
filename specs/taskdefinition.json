@@ -1,0 +1,17 @@
+{
+    "family": ${FAMILY},
+    "containerDefinitions": [
+        {
+            "name": ${CONTAINER_NAME},
+            "image": ${APP_IMG}:${APP_TAG},
+            "portMappings": [
+                {
+                    "containerPort": $CONTAINER_PORT,
+                    "hostPort": $HOST_PORT
+                }
+            ],
+            "memory": {MEMORY},
+            "essential": true
+        }
+    ]
+}
