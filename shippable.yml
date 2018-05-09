@@ -57,8 +57,26 @@ jobs:
             - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
             - REVISION=$(cat output.json | jq '.taskDefinition.revision')
             - echo "Task definition revision:"$REVISION
-            - aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} --desired-count 0
-            - aws ecs delete-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME}
+            - |
+              SERVICE_COUNT=$(aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} | jq ".services | length")
+              echo "SERVICE_COUNT:"$SERVICE_COUNT
+              if [ $SERVICE_COUNT -eq 1 ]
+              then
+                echo "deleting service"
+                aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} --desired-count 0
+
+                STATUS=$(aws ecs describe-services --cluster deploy-ecs-fargate --service node_app_service | jq ".services[0].status")
+                echo "STATUS is"$STATUS
+                  
+                while [ "$STATUS" != "INACTIVE" ]
+                do
+                    sleep 5
+                    STATUS=$(aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} | jq ".services[0].status")
+                    echo "STATUS is"$STATUS
+                done
+
+                aws ecs delete-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME}
+              fi
             - aws ecs create-service --service-name ${SERVICE_NAME} --cli-input-json file://${REPO_DIR}/specs/servicedefinition.json
             - aws ecs list-task-definitions
             - aws ecs run-task --cluster ${CLUSTER_NAME} --task-definition ${FAMILY}:3 --count 1
