@@ -1,5 +1,5 @@
 {
-    "family": ${FAMILY},
+    "family": "${FAMILY}",
     "containerDefinitions": [
         {
             "name": "${CONTAINER_NAME}",
