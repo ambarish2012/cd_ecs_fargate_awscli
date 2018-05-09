@@ -30,7 +30,7 @@ resources:
         CONTAINER_NAME: "node_app_container"
         HOST_PORT: 80
         CONTAINER_PORT: 80
-        MEMORY: 1024
+        MEMORY: 2048
         CPU: 1024
 
 jobs:
