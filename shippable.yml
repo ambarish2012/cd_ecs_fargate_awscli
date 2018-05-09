@@ -38,7 +38,7 @@ jobs:
       - TASK:
           name: deploy_app
           script:
-            - REPO_DIR=$(shipctl get_resource_state "cd_ecs_fargate_awscli_repo")
+            - REPO_DIR=$(shipctl get_resource_state "cd_ecs_fargate_repo")
             - pushd $REPO_DIR
             - cd specs
             - export APP_IMG=$(shipctl get_resource_version_key node_app_img_dh sourceName)
