@@ -57,9 +57,10 @@ jobs:
             - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
             - REVISION=$(cat output.json | jq '.taskDefinition.revision')
             - echo "Task definition revision:"$REVISION
+            - aws ecs delete-service --service ${SERVICE_NAME}
             - aws ecs create-service --service-name ${SERVICE_NAME} --cli-input-json file://${REPO_DIR}/specs/servicedefinition.json
             - aws ecs list-task-definitions
-            - aws ecs run-task --cluster {CLUSTER_NAME} --task-definition {FAMILY}:3 --count 1
+            - aws ecs run-task --cluster ${CLUSTER_NAME} --task-definition ${FAMILY}:3 --count 1
             - popd
     flags:
       - cd
