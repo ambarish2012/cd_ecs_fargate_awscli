@@ -11,6 +11,8 @@ resources:
   - name: cd_ecs_fargate_config
     type: cliConfig
     integration: "drship_aws"
+    versionTemplate:
+      region: "us-east-1"
 
   - name: cd_ecs_fargate_task_definition_params
     type: params
