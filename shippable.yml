@@ -18,7 +18,7 @@ resources:
     type: params
     versionTemplate:
       params:
-        CLUSTER: "deploy-ecs-fargate"
+        CLUSTER_NAME: "deploy-ecs-fargate"
         SERVICE_NAME: "node_app_service"
         DESIRED_COUNT: 1
 
