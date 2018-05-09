@@ -10,7 +10,7 @@
                     "hostPort": $HOST_PORT
                 }
             ],
-            "memory": {MEMORY},
+            "memory": ${MEMORY},
             "essential": true
         }
     ]
