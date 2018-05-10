@@ -26,4 +26,4 @@ SERVICE_NAME="node_app_service"
 #   done
 # fi
 
-aws ecs create-service --service-name ${SERVICE_NAME} --cli-input-json file:///Users/ambarish/ambarcsamples/cd_ecs_fargate_awscli/specs/servicedefinition0.json --launch-type "FARGATE" --network-configuration "awsvpcConfiguration={subnets=[subnet-34378e50],securityGroups=[sg-a23ee1d0]}"
+aws ecs create-service --service-name ${SERVICE_NAME} --cli-input-json file:///Users/ambarish/ambarcsamples/cd_ecs_fargate_awscli/specs/servicedefinition0.json --launch-type "FARGATE" --network-configuration "awsvpcConfiguration={assignPublicIp=ENABLED,subnets=[subnet-34378e50],securityGroups=[sg-a23ee1d0]}"

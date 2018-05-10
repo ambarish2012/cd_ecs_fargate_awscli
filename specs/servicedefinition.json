@@ -3,10 +3,5 @@
     "serviceName": "${SERVICE_NAME}",
     "taskDefinition": "${FAMILY}",
     "desiredCount": ${DESIRED_COUNT},
-    "launchType": "FARGATE",
-    "networkConfiguration": {
-        "awsvpcConfiguration": {
-            "AssignPublicIp": "ENABLED"
-        }
-    }
+    "launchType": "FARGATE"
 }

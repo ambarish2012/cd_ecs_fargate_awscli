@@ -84,7 +84,7 @@ jobs:
                     echo "STATUS is"$STATUS
                 done
               fi
-            - aws ecs create-service --service-name ${SERVICE_NAME} --cli-input-json file://${REPO_DIR}/specs/servicedefinition.json --launch-type "FARGATE" --network-configuration "awsvpcConfiguration={subnets=[subnet-34378e50],securityGroups=[sg-a23ee1d0]}"
+            - aws ecs create-service --service-name ${SERVICE_NAME} --cli-input-json file://${REPO_DIR}/specs/servicedefinition.json --launch-type "FARGATE" --network-configuration "awsvpcConfiguration={assignPublicIp=ENABLED,subnets=[subnet-34378e50],securityGroups=[sg-a23ee1d0]}"
             - aws ecs list-services --cluster ${CLUSTER_NAME}
             - aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME}
             - popd
