@@ -1,6 +1,0 @@
-{
-    "cluster": "deploy-ecs-fargate",
-    "serviceName": "node_app_service",
-    "taskDefinition": "ecs_fargate_task",
-    "desiredCount": 1
-}
