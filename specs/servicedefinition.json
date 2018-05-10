@@ -2,5 +2,10 @@
     "cluster": "${CLUSTER_NAME}",
     "serviceName": "${SERVICE_NAME}",
     "taskDefinition": "${FAMILY}",
-    "desiredCount": ${DESIRED_COUNT}
+    "desiredCount": ${DESIRED_COUNT},
+    "networkConfiguration": {
+        "awsvpcConfiguration": {
+            "assignPublicIp": "ENABLED"
+        }
+    }
 }
