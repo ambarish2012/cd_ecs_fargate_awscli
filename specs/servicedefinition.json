@@ -6,7 +6,7 @@
     "launchType": "FARGATE",
     "networkConfiguration": {
         "awsvpcConfiguration": {
-            "assignPublicIp": "ENABLED"
+            "AssignPublicIp": "ENABLED"
         }
     }
 }
