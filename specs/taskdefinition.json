@@ -3,12 +3,12 @@
     "networkMode": "awsvpc",
     "containerDefinitions": [
         {
-            "name": "${CONTAINER_NAME}",
+            "name": "node_app_container",
             "image": "${APP_IMG}:${APP_TAG}",
             "portMappings": [
                 {
-                    "containerPort": ${CONTAINER_PORT},
-                    "hostPort": ${HOST_PORT}
+                    "containerPort": 80,
+                    "hostPort": 80
                 }
             ],
 
