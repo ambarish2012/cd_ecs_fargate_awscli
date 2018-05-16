@@ -4,7 +4,7 @@ SERVICE_NAME=$2
 
 # check if the service exists
 aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} > service.json
-SERVICE_COUNT=$(shipctl get_json_value service.json "services | length")
+SERVICE_COUNT=$(shipctl get_json_value service.json 'services | length')
 echo "Service count using shipctl is"$SERVICE_COUNT
 
 SERVICE_COUNT=$(aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} | jq ".services | length")
