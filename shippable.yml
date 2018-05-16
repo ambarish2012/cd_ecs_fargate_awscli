@@ -50,7 +50,7 @@ jobs:
             - echo "Task definition revision:"$REVISION
             - popd
             - $REPO_DIR/utilities/delete_existing_ecs_service.sh ${CLUSTER_NAME} ${SERVICE_NAME}
-            - aws ecs create-service --service-name ${SERVICE_NAME} --cli-input-json file://${REPO_DIR}/specs/servicedefinition.json"
+            - aws ecs create-service --service-name ${SERVICE_NAME} --cli-input-json file://${REPO_DIR}/specs/servicedefinition.json
             - aws ecs list-services --cluster ${CLUSTER_NAME}
             - aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME}
     flags:
