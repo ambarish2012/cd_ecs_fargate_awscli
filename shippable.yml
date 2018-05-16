@@ -33,6 +33,7 @@ jobs:
                 - MEMORY: 2048
                 - SUBNET_ID: "subnet-34378e50"
                 - SECURITY_GROUP_ID: "sg-a23ee1d0"
+                - AWS_REGION: "us-east-1"
           script:
             - REPO_DIR=$(shipctl get_resource_state "cd_ecs_fargate_repo")
             - pushd $REPO_DIR/specs
