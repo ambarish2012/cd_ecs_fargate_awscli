@@ -39,6 +39,10 @@ jobs:
             - pushd $REPO_DIR/specs
             - export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_ec2_creds "accessKey")
             - export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_ec2_creds "secretKey")
+            - export AWS_REGION=${AWS_REGION}
+            - echo $AWS_ACCESS_KEY_ID
+            - echo $AWS_SECRET_ACCESS_KEY
+            - echo $AWS_REGION
             - export APP_IMG=$(shipctl get_resource_version_key node_app_img_dh sourceName)
             - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
             - shipctl replace taskdefinition.json servicedefinition.json
