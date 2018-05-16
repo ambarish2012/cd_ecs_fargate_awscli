@@ -37,8 +37,8 @@ jobs:
           script:
             - REPO_DIR=$(shipctl get_resource_state "cd_ecs_fargate_repo")
             - pushd $REPO_DIR/specs
-            - export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_ec2_creds "accessKey")
-            - export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_ec2_creds "secretKey")
+            - export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field cd_ecs_fargate_creds "accessKey")
+            - export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field cd_ecs_fargate_creds "secretKey")
             - export AWS_REGION=${AWS_REGION}
             - echo $AWS_ACCESS_KEY_ID
             - echo $AWS_SECRET_ACCESS_KEY
