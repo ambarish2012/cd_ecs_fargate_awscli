@@ -43,6 +43,7 @@ jobs:
             - export APP_IMG=$(shipctl get_resource_version_key node_app_img_dh sourceName)
             - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
             - shipctl replace taskdefinition.json servicedefinition.json
+            - cat servicedefinition.json
             - aws ecs create-cluster --cluster-name ${CLUSTER_NAME}
             - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
             - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
