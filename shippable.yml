@@ -40,11 +40,12 @@ jobs:
             - aws configure set aws_access_key_id $(shipctl get_integration_resource_field cd_ecs_fargate_creds "accessKey")
             - aws configure set aws_secret_access_key $(shipctl get_integration_resource_field cd_ecs_fargate_creds "secretKey")
             - aws configure set default.region ${AWS_REGION}
+            - shipctl replace taskdefinition
             - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
             - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
             - export APP_IMG=$(shipctl get_resource_version_key node_app_img_dh sourceName)
             - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
-            - shipctl replace taskdefinition.json servicedefinition.json
+            - shipctl replace servicedefinition.json
             - popd
             - $REPO_DIR/utilities/delete_existing_ecs_service.sh ${CLUSTER_NAME} ${SERVICE_NAME}
             - aws ecs create-cluster --cluster-name ${CLUSTER_NAME}
