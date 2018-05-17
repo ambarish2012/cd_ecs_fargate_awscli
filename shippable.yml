@@ -45,7 +45,6 @@ jobs:
             - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
             - shipctl replace taskdefinition.json
             - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
-            - cat output.json
             - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
             - shipctl replace servicedefinition.json
             - popd
@@ -96,7 +95,6 @@ jobs:
             - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
             - shipctl replace taskdefinition.json
             - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
-            - cat output.json
             - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
             - shipctl replace servicedefinition.json
             - popd
