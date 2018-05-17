@@ -37,7 +37,7 @@ jobs:
                 - AWS_REGION: "us-east-1"
           script:
             - REPO_DIR=$(shipctl get_resource_state "cd_ecs_fargate_repo")
-            - pushd $REPO_DIR/specs
+            #- pushd $REPO_DIR/specs
             - aws configure set aws_access_key_id $(shipctl get_integration_resource_field cd_ecs_fargate_creds "accessKey")
             - aws configure set aws_secret_access_key $(shipctl get_integration_resource_field cd_ecs_fargate_creds "secretKey")
             - aws configure set default.region ${AWS_REGION}
