@@ -81,8 +81,8 @@ jobs:
                 - SERVICE_NAME: "node_app_service"
                 - FAMILY: "ecs_fargate_task"
                 - DESIRED_TASK_COUNT: 1
-                - CPU: 1024
-                - MEMORY: 2048
+                - CPU: 256
+                - MEMORY: 512
                 - SUBNET_ID: "subnet-34378e50"
                 - SECURITY_GROUP_ID: "sg-a23ee1d0"
                 - AWS_REGION: "us-east-1"
