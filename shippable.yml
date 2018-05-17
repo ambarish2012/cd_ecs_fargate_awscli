@@ -13,7 +13,7 @@ resources:
     integration: "drship_aws"
 
 jobs:
-  - name: deploy_app_ecs_fargate
+  - name: deploy_app_ecs_fargate_deployment_strategy_replace
     type: runSh
     steps:
       - IN: node_app_img_dh # defined here https://github.com/devops-recipes/node_app/blob/master/shippable.yml
@@ -56,7 +56,58 @@ jobs:
               if [ $? -eq 0 ]; then
                   TASK_DATA=$(${REPO_DIR}/utilities/get_ecs_service_task_data.sh ${CLUSTER_NAME} ${SERVICE_NAME})
                   NETWORK_INTERFACE_ID=$(echo ${TASK_DATA} | jq -r ".tasks[0].attachments[0].details[1].value")
-                  PUBLIC_IP=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=${NETWORK_INTERFACE_ID} | jq -r ".NetworkInterfaces[0].Association.PublicIp"}
+                  PUBLIC_IP=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=${NETWORK_INTERFACE_ID} | jq -r ".NetworkInterfaces[0].Association.PublicIp"})
+                  curl ${PUBLIC_IP}
+              fi
+    flags:
+      - cd
+      - awscli
+      - fargate
+
+jobs:
+  - name: deploy_app_ecs_fargate_deployment_strategy_update
+    type: runSh
+    steps:
+      - IN: node_app_img_dh # defined here https://github.com/devops-recipes/node_app/blob/master/shippable.yml
+      - IN: cd_ecs_fargate_repo
+        switch: off
+      - IN: cd_ecs_fargate_creds
+        switch: off
+      - TASK:
+          name: deploy_app
+          runtime:
+            options:
+              env:
+                - CLUSTER_NAME: "deploy-ecs-fargate"
+                - SERVICE_NAME: "node_app_service"
+                - FAMILY: "ecs_fargate_task"
+                - DESIRED_TASK_COUNT: 1
+                - CPU: 1024
+                - MEMORY: 2048
+                - SUBNET_ID: "subnet-34378e50"
+                - SECURITY_GROUP_ID: "sg-a23ee1d0"
+                - AWS_REGION: "us-east-1"
+          script:
+            - REPO_DIR=$(shipctl get_resource_state "cd_ecs_fargate_repo")
+            - pushd $REPO_DIR/specs
+            - aws configure set aws_access_key_id $(shipctl get_integration_resource_field cd_ecs_fargate_creds "accessKey")
+            - aws configure set aws_secret_access_key $(shipctl get_integration_resource_field cd_ecs_fargate_creds "secretKey")
+            - aws configure set default.region ${AWS_REGION}
+            - export APP_IMG=$(shipctl get_resource_version_key node_app_img_dh sourceName)
+            - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
+            - shipctl replace taskdefinition.json
+            - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
+            - cat output.json
+            - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
+            - shipctl replace servicedefinition.json
+            - popd
+            - ${REPO_DIR}/utilities/upgrade_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}
+            - ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
+            - |
+              if [ $? -eq 0 ]; then
+                  TASK_DATA=$(${REPO_DIR}/utilities/get_ecs_service_task_data.sh ${CLUSTER_NAME} ${SERVICE_NAME})
+                  NETWORK_INTERFACE_ID=$(echo ${TASK_DATA} | jq -r ".tasks[0].attachments[0].details[1].value")
+                  PUBLIC_IP=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=${NETWORK_INTERFACE_ID} | jq -r ".NetworkInterfaces[0].Association.PublicIp"})
                   curl ${PUBLIC_IP}
               fi
     flags:
