@@ -9,11 +9,15 @@ format='%Y%m%d%S'
 currDate=$(date +${format})
 finalDate=$(date --date 'now + '${SECONDS_TO_POLL}+'seconds' +${format})
 
+echo "current DateTime: "${currDate}
+echo "final DateTime: "${finalDate}
+
 while [ "$currDate" -lt "$finalDate" ]
 do
-    RUNNING_TASK_COUNT = $(aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} | jq ".services[0].runningCount")
+    RUNNING_TASK_COUNT=$(aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} | jq ".services[0].runningCount")
+    echo "Running task count "${RUNNING_TASK_COUNT}
 
-    if [ "$RUNNING_TASK_COUNT" -eq "$DESIRED_TASK_COUNT"  ]; then
+    if [ "$RUNNING_TASK_COUNT" -eq "$DESIRED_TASK_COUNT" ]; then
         echo "Deployment is complete"
         break
     fi
