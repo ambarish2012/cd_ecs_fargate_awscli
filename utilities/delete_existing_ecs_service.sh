@@ -21,7 +21,7 @@ then
     # wait until the service drains
     while [ "$STATUS" != "\"INACTIVE\"" ]
     do
-        sleep 5
+        sleep 1
         STATUS=$(aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} | jq ".services[0].status")
         echo "STATUS is"$STATUS
     done

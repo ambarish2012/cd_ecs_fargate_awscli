@@ -29,6 +29,7 @@ jobs:
                 - CLUSTER_NAME: "deploy-ecs-fargate"
                 - SERVICE_NAME: "node_app_service"
                 - FAMILY: "ecs_fargate_task"
+                - DESIRED_TASK_COUNT: 1
                 - CPU: 1024
                 - MEMORY: 2048
                 - SUBNET_ID: "subnet-34378e50"
@@ -44,13 +45,15 @@ jobs:
             - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
             - shipctl replace taskdefinition.json
             - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
+            - cat output.json
             - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
             - shipctl replace servicedefinition.json
             - popd
-            - $REPO_DIR/utilities/delete_existing_ecs_service.sh ${CLUSTER_NAME} ${SERVICE_NAME}
             - aws ecs create-cluster --cluster-name ${CLUSTER_NAME}
-            - aws ecs create-service --service-name ${SERVICE_NAME} --cli-input-json file://${REPO_DIR}/specs/servicedefinition.json
-            - aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME}
+            - ${REPO_DIR}/utilities/upgrade_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}
+            - ${REPO_DIR}/utilities/check_service_stability.sh
+            -
+
     flags:
       - cd
       - awscli
