@@ -22,7 +22,7 @@ jobs:
       - IN: cd_ecs_fargate_creds
         switch: off
       - TASK:
-          name: deploy_app
+          name: deployment_strategy_replace
           runtime:
             options:
               env:
@@ -64,8 +64,7 @@ jobs:
       - awscli
       - fargate
 
-jobs:
-  - name: deploy_app_ecs_fargate_deployment_strategy_update
+  - name: deploy_app_ecs_fargate_deployment_strategy_upgrade
     type: runSh
     steps:
       - IN: node_app_img_dh # defined here https://github.com/devops-recipes/node_app/blob/master/shippable.yml
@@ -74,7 +73,7 @@ jobs:
       - IN: cd_ecs_fargate_creds
         switch: off
       - TASK:
-          name: deploy_app
+          name: deployment_strategy_upgrade
           runtime:
             options:
               env:
