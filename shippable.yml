@@ -36,12 +36,12 @@ jobs:
                 - SECURITY_GROUP_ID: "sg-a23ee1d0"
                 - AWS_REGION: "us-east-1"
           script:
-            - TASK_DEFINITION_DATA=$(aws ecs describe-services --cluster ${CLUSTER_NAME}  --service ${SERVICE_NAME})
             - REPO_DIR=$(shipctl get_resource_state "cd_ecs_fargate_repo")
             - pushd $REPO_DIR/specs
             - aws configure set aws_access_key_id $(shipctl get_integration_resource_field cd_ecs_fargate_creds "accessKey")
             - aws configure set aws_secret_access_key $(shipctl get_integration_resource_field cd_ecs_fargate_creds "secretKey")
             - aws configure set default.region ${AWS_REGION}
+            - TASK_DEFINITION_DATA=$(aws ecs describe-services --cluster ${CLUSTER_NAME}  --service ${SERVICE_NAME})
             - echo $TASK_DEFINITION_DATA
             - echo $TASK_DEFINITION_DATA | jq ".services[0].events[1].message"
             - echo $TASK_DEFINITION_DATA | jq ".services[0].events[1].message" | awk '{print $8}' | cut -d ')' -f 1
