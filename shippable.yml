@@ -52,11 +52,13 @@ jobs:
             - aws ecs create-cluster --cluster-name ${CLUSTER_NAME}
             - ${REPO_DIR}/utilities/replace_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}
             - ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
-            - TASK_DATA=$(${REPO_DIR}/utilities/get_ecs_service_task_data.sh)
-            - NETWORK_INTERFACE_ID=$(echo ${TASK_DATA} | jq -r ".tasks[0].attachments[0].details[1].value")
-            - PUBLIC_IP=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=${NETWORK_INTERFACE_ID} | jq -r ".NetworkInterfaces[0].Association.PublicIp"}
-            - curl ${PUBLIC_IP}
-
+            - |
+              if [ $? -eq 0 ]; then
+                  TASK_DATA=$(${REPO_DIR}/utilities/get_ecs_service_task_data.sh ${CLUSTER_NAME} ${SERVICE_NAME})
+                  NETWORK_INTERFACE_ID=$(echo ${TASK_DATA} | jq -r ".tasks[0].attachments[0].details[1].value")
+                  PUBLIC_IP=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=${NETWORK_INTERFACE_ID} | jq -r ".NetworkInterfaces[0].Association.PublicIp"}
+                  curl ${PUBLIC_IP}
+              fi
     flags:
       - cd
       - awscli
