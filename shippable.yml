@@ -41,10 +41,13 @@ jobs:
             - aws configure set aws_access_key_id $(shipctl get_integration_resource_field cd_ecs_fargate_creds "accessKey")
             - aws configure set aws_secret_access_key $(shipctl get_integration_resource_field cd_ecs_fargate_creds "secretKey")
             - aws configure set default.region ${AWS_REGION}
-            - TASK_DEFINITION_DATA=$(aws ecs describe-services --cluster ${CLUSTER_NAME}  --service ${SERVICE_NAME})
-            - echo $TASK_DEFINITION_DATA
-            - echo $TASK_DEFINITION_DATA | jq ".services[0].events[1].message"
-            - echo $TASK_DEFINITION_DATA | jq ".services[0].events[1].message" | awk '{print $8}' | cut -d ')' -f 1
+            - >
+              if [ $? -eq 0 ]; then
+                  TASK_DATA=$(${REPO_DIR}/utilities/get_ecs_service_task_data.sh ${CLUSTER_NAME} ${SERVICE_NAME})
+                  NETWORK_INTERFACE_ID=$(echo ${TASK_DATA} | jq -r ".tasks[0].attachments[0].details[1].value")
+                  PUBLIC_IP=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=${NETWORK_INTERFACE_ID} | jq -r ".NetworkInterfaces[0].Association.PublicIp")
+                  curl ${PUBLIC_IP}
+              fi
             # - export APP_IMG=$(shipctl get_resource_version_key node_app_img_dh sourceName)
             # - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
             # - shipctl replace taskdefinition.json
