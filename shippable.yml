@@ -41,28 +41,18 @@ jobs:
             - aws configure set aws_access_key_id $(shipctl get_integration_resource_field cd_ecs_fargate_creds "accessKey")
             - aws configure set aws_secret_access_key $(shipctl get_integration_resource_field cd_ecs_fargate_creds "secretKey")
             - aws configure set default.region ${AWS_REGION}
-            - TASK_DATA=$(${REPO_DIR}/utilities/get_ecs_service_task_data.sh ${CLUSTER_NAME} ${SERVICE_NAME})
-            - NETWORK_INTERFACE_ID=$(echo ${TASK_DATA} | jq -r ".tasks[0].attachments[0].details[1].value")
-            - PUBLIC_IP=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=${NETWORK_INTERFACE_ID} | jq -r ".NetworkInterfaces[0].Association.PublicIp")
-            - curl ${PUBLIC_IP}
-            # - export APP_IMG=$(shipctl get_resource_version_key node_app_img_dh sourceName)
-            # - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
-            # - shipctl replace taskdefinition.json
-            # - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
-            # - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
-            # - shipctl replace servicedefinition.json
-            # - popd
-            # - aws ecs create-cluster --cluster-name ${CLUSTER_NAME}
-            # - ${REPO_DIR}/utilities/replace_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}
-            # - ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
-            # - TASK_DATA=$(${REPO_DIR}/utilities/get_ecs_service_task_data.sh ${CLUSTER_NAME} ${SERVICE_NAME})
-            # - |
-            #   if [ $? -eq 0 ]; then
-            #       TASK_DATA=$(${REPO_DIR}/utilities/get_ecs_service_task_data.sh ${CLUSTER_NAME} ${SERVICE_NAME})
-            #       NETWORK_INTERFACE_ID=$(echo ${TASK_DATA} | jq -r ".tasks[0].attachments[0].details[1].value")
-            #       PUBLIC_IP=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=${NETWORK_INTERFACE_ID} | jq -r ".NetworkInterfaces[0].Association.PublicIp")
-            #       curl ${PUBLIC_IP}
-            #   fi
+            - export APP_IMG=$(shipctl get_resource_version_key node_app_img_dh sourceName)
+            - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
+            - shipctl replace taskdefinition.json
+            - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
+            - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
+            - shipctl replace servicedefinition.json
+            - popd
+            - aws ecs create-cluster --cluster-name ${CLUSTER_NAME}
+            - ${REPO_DIR}/utilities/replace_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}
+            - ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
+            - if [ $? -eq 0 ]; then PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh) fi
+            - if [ $? -eq 0 ]; then curl ${PUBLIC_IP} fi
     flags:
       - cd
       - awscli
