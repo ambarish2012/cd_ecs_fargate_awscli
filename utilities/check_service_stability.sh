@@ -9,9 +9,6 @@ format='%Y%m%d%H%M%S'
 currDate=$(date +${format})
 finalDate=$(date -d 'now + '${MINUTES_TO_POLL}' minutes' +${format})
 
-echo "current DateTime: "${currDate}
-echo "final DateTime: "${finalDate}
-
 while [ "$currDate" -lt "$finalDate" ]
 do
     RUNNING_TASK_COUNT=$(aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} | jq ".services[0].runningCount")
@@ -27,5 +24,3 @@ do
 done
 
 echo "Desired count of tasks has not been reached in time specified, please check ECS service event logs"
-
-date --date 'now + '4' minutes' +'%Y%m%d%S'
