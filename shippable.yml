@@ -50,9 +50,8 @@ jobs:
             - shipctl replace servicedefinition.json
             - popd
             - aws ecs create-cluster --cluster-name ${CLUSTER_NAME}
-            - ${REPO_DIR}/utilities/upgrade_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}
+            - ${REPO_DIR}/utilities/replace_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}
             - ${REPO_DIR}/utilities/check_service_stability.sh
-            -
 
     flags:
       - cd
