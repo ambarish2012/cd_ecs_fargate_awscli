@@ -41,8 +41,7 @@ jobs:
             - aws configure set aws_access_key_id $(shipctl get_integration_resource_field cd_ecs_fargate_creds "accessKey")
             - aws configure set aws_secret_access_key $(shipctl get_integration_resource_field cd_ecs_fargate_creds "secretKey")
             - aws configure set default.region ${AWS_REGION}
-            - TASK_DATA=$(${REPO_DIR}/utilities/get_ecs_service_task_data.sh ${CLUSTER_NAME} ${SERVICE_NAME})
-            - echo $TASK_DATA
+            - ${REPO_DIR}/utilities/get_ecs_service_task_data.sh ${CLUSTER_NAME} ${SERVICE_NAME}
             # - export APP_IMG=$(shipctl get_resource_version_key node_app_img_dh sourceName)
             # - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
             # - shipctl replace taskdefinition.json
