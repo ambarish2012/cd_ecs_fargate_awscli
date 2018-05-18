@@ -100,3 +100,33 @@ jobs:
       - cd
       - awscli
       - fargate
+
+jobs:
+  - name: deploy_app_ecs_fargate_deployment_strategy_bluegreen
+    type: runSh
+    steps:
+      - IN: node_app_img_dh # defined here https://github.com/devops-recipes/node_app/blob/master/shippable.yml
+      - IN: cd_ecs_fargate_repo
+        switch: off
+      - IN: cd_ecs_fargate_creds
+        switch: off
+      - TASK:
+          name: deployment_strategy_replace
+          runtime:
+            options:
+              env:
+                - CLUSTER_NAME: "deploy-ecs-fargate"
+                - SERVICE_NAME: "node_app_service"
+                - FAMILY: "ecs_fargate_task"
+                - DESIRED_TASK_COUNT: 1
+                - CPU: 1024
+                - MEMORY: 2048
+                - SUBNET_ID: "subnet-34378e50"
+                - SECURITY_GROUP_ID: "sg-a23ee1d0"
+                - AWS_REGION: "us-east-1"
+          script:
+            - serviceId=$(shipctl get_resource_version_key $JOB_PREVIOUS_STATE serviceId)
+            - if [ -z "${serviceId}" ]; then serviceId=1; else let "serviceId++" fi
+            - echo ${serviceId}
+            - shipctl put_resource_state $JOB_NAME serviceId ${serviceId}
+            
