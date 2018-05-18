@@ -51,8 +51,8 @@ jobs:
             - aws ecs create-cluster --cluster-name ${CLUSTER_NAME}
             - ${REPO_DIR}/utilities/replace_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}
             - ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
-            - if [ $? -eq 0 ]; then PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}); fi
-            - if [ $? -eq 0 ]; then curl ${PUBLIC_IP}; fi
+            - PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR})
+            - curl ${PUBLIC_IP}
     flags:
       - cd
       - awscli
@@ -94,8 +94,8 @@ jobs:
             - popd
             - ${REPO_DIR}/utilities/upgrade_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${FAMILY}:${REVISION}
             - ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
-            - if [ $? -eq 0 ]; then PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}); fi
-            - if [ $? -eq 0 ]; then curl ${PUBLIC_IP}; fi
+            - PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR})
+            - curl ${PUBLIC_IP}
     flags:
       - cd
       - awscli
