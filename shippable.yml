@@ -101,7 +101,6 @@ jobs:
       - awscli
       - fargate
 
-jobs:
   - name: deploy_app_ecs_fargate_deployment_strategy_bluegreen
     type: runSh
     steps:
