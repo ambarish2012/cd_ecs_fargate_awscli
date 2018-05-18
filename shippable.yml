@@ -111,7 +111,7 @@ jobs:
       - IN: cd_ecs_fargate_creds
         switch: off
       - TASK:
-          name: deployment_strategy_replace
+          name: deployment_strategy_bluegreen
           runtime:
             options:
               env:
@@ -129,4 +129,3 @@ jobs:
             - if [ -z "${serviceId}" ]; then serviceId=1; else let "serviceId++" fi
             - echo ${serviceId}
             - shipctl put_resource_state $JOB_NAME serviceId ${serviceId}
-            
