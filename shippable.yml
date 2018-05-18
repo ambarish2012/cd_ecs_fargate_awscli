@@ -124,7 +124,14 @@ jobs:
                 - SECURITY_GROUP_ID: "sg-a23ee1d0"
                 - AWS_REGION: "us-east-1"
           script:
-            - serviceId=$(shipctl get_resource_version_key $JOB_PREVIOUS_STATE serviceId)
-            - if [ -z "${serviceId}" ]; then serviceId=1; else let "serviceId++" fi
+            - shipctl copy_file_from_prev_state serviceId.env .
+            - |
+              if [ -f serviceId.env ]; then
+                . serviceId.env
+                let "serviceId++"
+              else
+                serviceId=${BUILD_NUMBER}
+                echo "serviceId=${BUILD_NUMBER}" > serviceId.env
+              fi
             - echo ${serviceId}
-            - shipctl put_resource_state $JOB_NAME serviceId ${serviceId}
+            - shipctl copy_file_to_state serviceId.env
