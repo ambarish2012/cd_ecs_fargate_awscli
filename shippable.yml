@@ -41,8 +41,6 @@ jobs:
             - aws configure set aws_access_key_id $(shipctl get_integration_resource_field cd_ecs_fargate_creds "accessKey")
             - aws configure set aws_secret_access_key $(shipctl get_integration_resource_field cd_ecs_fargate_creds "secretKey")
             - aws configure set default.region ${AWS_REGION}
-            # - if [ $? -eq 0 ]; then PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}); fi
-            # - echo $PUBLIC_IP
             - export APP_IMG=$(shipctl get_resource_version_key node_app_img_dh sourceName)
             - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
             - shipctl replace taskdefinition.json
@@ -97,13 +95,8 @@ jobs:
             - popd
             - ${REPO_DIR}/utilities/upgrade_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}
             - ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
-            - |
-              if [ $? -eq 0 ]; then
-                  TASK_DATA=$(${REPO_DIR}/utilities/get_ecs_service_task_data.sh ${CLUSTER_NAME} ${SERVICE_NAME})
-                  NETWORK_INTERFACE_ID=$(echo ${TASK_DATA} | jq -r ".tasks[0].attachments[0].details[1].value")
-                  PUBLIC_IP=$(aws ec2 describe-network-interfaces --filters Name=network-interface-id,Values=${NETWORK_INTERFACE_ID} | jq -r ".NetworkInterfaces[0].Association.PublicIp")
-                  curl ${PUBLIC_IP}
-              fi
+            - if [ $? -eq 0 ]; then PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}); fi
+            - if [ $? -eq 0 ]; then curl ${PUBLIC_IP}; fi
     flags:
       - cd
       - awscli
