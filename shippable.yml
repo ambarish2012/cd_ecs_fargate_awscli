@@ -129,7 +129,7 @@ jobs:
                 . $JOB_PREVIOUS_STATE/serviceId.env
                 let "serviceId++"
               else
-                serviceId=${BUILD_NUMBER}
+                serviceId=1
               fi
             - echo ${serviceId}
             - echo "serviceId=${serviceId}" > serviceId.env
