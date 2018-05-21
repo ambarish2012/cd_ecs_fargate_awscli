@@ -14,10 +14,16 @@ function bluegreen_deployment_strategy {
       EXISTING_BLUE_SERVICE_NAME=${SERVICE_NAME}${serviceId}
       let "serviceId++"
     else
+      EXISTING_BLUE_SERVICE_NAME=${SERVICE_NAME}
       serviceId=1
     fi
 
     GREEN_SERVICE_NAME=${SERVICE_NAME}${serviceId}
+
+    pushd $REPO_DIR/specs
+    SERVICE_NAME=${GREEN_SERVICE_NAME}
+    shipctl replace servicedefinition.json
+    popd
 
     # Deploy green service
     echo "Creating green service"${GREEN_SERVICE_NAME}
@@ -49,9 +55,9 @@ function bluegreen_deployment_strategy {
     # Delete service if it existed at the very first deployment
     if [ "${serviceId}" -eq 1 ]; then
       # Check if blue service was already running
-      RUNNING_TASK_COUNT=$(aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} | jq ".services[0].runningCount")
+      RUNNING_TASK_COUNT=$(aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${EXISTING_BLUE_SERVICE_NAME} | jq ".services[0].runningCount")
       if [ "${RUNNING_TASK_COUNT}" -eq 1 ]; then
-        ${REPO_DIR}/utilities/delete_existing_ecs_service.sh ${CLUSTER_NAME} ${SERVICE_NAME}
+        ${REPO_DIR}/utilities/delete_existing_ecs_service.sh ${CLUSTER_NAME} ${EXISTING_BLUE_SERVICE_NAME}
       fi
     else
       # Delete previously deployed blue service
