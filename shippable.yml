@@ -93,7 +93,6 @@ jobs:
             - shipctl replace taskdefinition.json
             - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
             - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
-            - shipctl replace servicedefinition.json
             - popd
             - ${REPO_DIR}/utilities/upgrade_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${FAMILY}:${REVISION}
             - ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
@@ -140,7 +139,9 @@ jobs:
             - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
             - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
             - popd
-            - ${REPO_DIR}/utilities/bluegreen_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR} 1
+            - shipctl replace servicedefinition.json
+            - source ${REPO_DIR}/utilities/bluegreen_deployment_strategy.sh
+            - bluegreen_deployment_strategy ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR} 1
             - retVal=$?
             - if [ $retVal -ne 0 ]; then exit 1; fi
             - GREEN_SERVICE_NAME=$(${REPO_DIR}/utilities/get_green_service_name.sh ${SERVICE_NAME})
