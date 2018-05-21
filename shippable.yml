@@ -51,6 +51,8 @@ jobs:
             - aws ecs create-cluster --cluster-name ${CLUSTER_NAME}
             - ${REPO_DIR}/utilities/replace_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}
             - ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
+            - retVal=$?
+            - if [ $retVal -neq 0 ]; then exit 1; fi
             - PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR})
             - curl ${PUBLIC_IP}
     flags:
@@ -94,6 +96,8 @@ jobs:
             - popd
             - ${REPO_DIR}/utilities/upgrade_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${FAMILY}:${REVISION}
             - ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
+            - retVal=$?
+            - if [ $retVal -neq 0 ]; then exit 1; fi
             - PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR})
             - curl ${PUBLIC_IP}
     flags:
@@ -124,13 +128,20 @@ jobs:
                 - SECURITY_GROUP_ID: "sg-a23ee1d0"
                 - AWS_REGION: "us-east-1"
           script:
-            - |
-              if [ -f $JOB_PREVIOUS_STATE/serviceId.env ]; then
-                . $JOB_PREVIOUS_STATE/serviceId.env
-                let "serviceId++"
-              else
-                serviceId=1
-              fi
-            - echo ${serviceId}
-            - echo "serviceId=${serviceId}" > serviceId.env
-            - shipctl copy_file_to_state serviceId.env
+            - REPO_DIR=$(shipctl get_resource_state "cd_ecs_fargate_repo")
+            - pushd $REPO_DIR/specs
+            - aws configure set aws_access_key_id $(shipctl get_integration_resource_field cd_ecs_fargate_creds "accessKey")
+            - aws configure set aws_secret_access_key $(shipctl get_integration_resource_field cd_ecs_fargate_creds "secretKey")
+            - aws configure set default.region ${AWS_REGION}
+            - export APP_IMG=$(shipctl get_resource_version_key node_app_img_dh sourceName)
+            - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
+            - shipctl replace taskdefinition.json
+            - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
+            - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
+            - popd
+            - ${REPO_DIR}/utilities/bluegreen_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR} 1
+            - retVal=$?
+            - if [ $retVal -neq 0 ]; then exit 1; fi
+            - GREEN_SERVICE_NAME=$(${REPO_DIR}/utilities/get_green_service_name.sh ${SERVICE_NAME})
+            - PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${GREEN_SERVICE_NAME} ${REPO_DIR})
+            - curl ${PUBLIC_IP}
