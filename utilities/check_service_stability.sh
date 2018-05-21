@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
 function check_service_stability {
-    CLUSTER_NAME=$1
-    SERVICE_NAME=$2
-    DESIRED_TASK_COUNT=$3
+    CLUSTER_NAME_ARG=$1
+    SERVICE_NAME_ARG=$2
+    DESIRED_TASK_COUNT_ARG=$3
     MINUTES_TO_POLL=$4
 
     SUCCESS=1
@@ -14,10 +14,10 @@ function check_service_stability {
 
     while [ "${currDate}" -lt "${finalDate}" ]
     do
-        RUNNING_TASK_COUNT=$(aws ecs describe-services --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} | jq ".services[0].runningCount")
+        RUNNING_TASK_COUNT=$(aws ecs describe-services --cluster ${CLUSTER_NAME_ARG} --service ${SERVICE_NAME_ARG} | jq ".services[0].runningCount")
         echo "Running task count "${RUNNING_TASK_COUNT}
 
-        if [ "${RUNNING_TASK_COUNT}" -eq "${DESIRED_TASK_COUNT}" ]; then
+        if [ "${RUNNING_TASK_COUNT}" -eq "${DESIRED_TASK_COUNT_ARG}" ]; then
             SUCCESS=0
             break
         fi

@@ -143,7 +143,7 @@ jobs:
             - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
             - popd
             - source ${REPO_DIR}/utilities/bluegreen_deployment_strategy.sh
-            - bluegreen_deployment_strategy ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR} ${DESIRED_TASK_COUNT} ${REVISION} ${REPO_DIR}/validate_service.sh
+            - bluegreen_deployment_strategy ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR} ${DESIRED_TASK_COUNT} ${REPO_DIR}/validate_service.sh
             - retVal=$?
             - if [ $retVal -ne 0 ]; then exit 1; fi
             - echo "Service name is "${SERVICE_NAME}
