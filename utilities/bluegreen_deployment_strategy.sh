@@ -42,8 +42,9 @@ function bluegreen_deployment_strategy {
     fi
 
     # Increment and persist serviceId
-    echo "serviceId=${serviceId}" > serviceId.env
-    shipctl copy_file_to_state serviceId.env
+    echo "serviceId=${serviceId}" > ./serviceId.env
+    shipctl copy_file_to_state ./serviceId.env
+    cat ${JOB_STATE}/serviceId.env
 
     # Delete service if it existed at the very first deployment
     if [ "${serviceId}" -eq 1 ]; then

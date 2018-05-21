@@ -147,5 +147,6 @@ jobs:
             - retVal=$?
             - if [ $retVal -ne 0 ]; then exit 1; fi
             - GREEN_SERVICE_NAME=$(${REPO_DIR}/utilities/get_green_service_name.sh ${SERVICE_NAME})
+            - echo "Green service name is "${GREEN_SERVICE_NAME}
             - PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${GREEN_SERVICE_NAME} ${REPO_DIR})
             - curl ${PUBLIC_IP}
