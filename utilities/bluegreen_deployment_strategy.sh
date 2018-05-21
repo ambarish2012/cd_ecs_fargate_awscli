@@ -6,8 +6,6 @@ function bluegreen_deployment_strategy {
     DESIRED_TASK_COUNT_ARG=$4
     VALIDATION_TASK_SCRIPT_ARG=$5
 
-    rm $JOB_PREVIOUS_STATE/serviceId.env
-
     # Generate green service name
     if [ -f $JOB_PREVIOUS_STATE/serviceId.env ]; then
       . $JOB_PREVIOUS_STATE/serviceId.env
