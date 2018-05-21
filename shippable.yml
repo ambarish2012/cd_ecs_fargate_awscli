@@ -143,7 +143,7 @@ jobs:
             - shipctl replace servicedefinition.json
             - popd
             - source ${REPO_DIR}/utilities/bluegreen_deployment_strategy.sh
-            - bluegreen_deployment_strategy ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR} 1
+            - bluegreen_deployment_strategy ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR} 1 ${REPO_DIR}/validate_service.sh
             - retVal=$?
             - if [ $retVal -ne 0 ]; then exit 1; fi
             - GREEN_SERVICE_NAME=$(${REPO_DIR}/utilities/get_green_service_name.sh ${SERVICE_NAME})
