@@ -37,7 +37,8 @@ function bluegreen_deployment_strategy {
     fi
 
     # Check status of green service
-    ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${GREEN_SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
+    source ${REPO_DIR}/utilities/check_service_stability.sh
+    check_service_stability ${CLUSTER_NAME} ${GREEN_SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
     retVal=$?
     if [ $retVal -ne 0 ]; then
       ${REPO_DIR}/utilities/delete_existing_ecs_service.sh ${CLUSTER_NAME} ${GREEN_SERVICE_NAME}
