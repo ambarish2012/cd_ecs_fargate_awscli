@@ -50,7 +50,8 @@ jobs:
             - popd
             - aws ecs create-cluster --cluster-name ${CLUSTER_NAME}
             - ${REPO_DIR}/utilities/replace_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR}
-            - ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
+            - source ${REPO_DIR}/utilities/check_service_stability.sh
+            - check_service_stability ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
             - retVal=$?
             - if [ $retVal -ne 0 ]; then exit 1; fi
             - PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR})
@@ -95,7 +96,8 @@ jobs:
             - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
             - popd
             - ${REPO_DIR}/utilities/upgrade_deployment_strategy.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${FAMILY}:${REVISION}
-            - ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
+            - source ${REPO_DIR}/utilities/check_service_stability.sh
+            - check_service_stability ${CLUSTER_NAME} ${SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
             - retVal=$?
             - if [ $retVal -ne 0 ]; then exit 1; fi
             - PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR})
