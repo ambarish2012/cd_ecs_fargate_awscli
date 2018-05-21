@@ -146,6 +146,7 @@ jobs:
             - bluegreen_deployment_strategy ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR} ${DESIRED_TASK_COUNT} ${REVISION} ${REPO_DIR}/validate_service.sh
             - retVal=$?
             - if [ $retVal -ne 0 ]; then exit 1; fi
+            - echo "Service name is "${SERVICE_NAME}
             - GREEN_SERVICE_NAME=$(${REPO_DIR}/utilities/get_green_service_name.sh ${SERVICE_NAME})
             - echo "Green service name is "${GREEN_SERVICE_NAME}
             - PUBLIC_IP=$(${REPO_DIR}/utilities/get_ecs_service_public_ip.sh ${CLUSTER_NAME} ${GREEN_SERVICE_NAME} ${REPO_DIR})
