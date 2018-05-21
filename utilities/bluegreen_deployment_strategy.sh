@@ -24,7 +24,6 @@ function bluegreen_deployment_strategy {
     pushd $REPO_DIR/specs
     export DEPLOYED_SERVICE_NAME=${GREEN_SERVICE_NAME}
     shipctl replace servicedefinition.json
-    cat servicedefinition.json
     popd
 
     # Deploy green service
