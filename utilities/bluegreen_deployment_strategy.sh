@@ -12,14 +12,14 @@ function bluegreen_deployment_strategy {
     # Generate green service name
     if [ -f $JOB_PREVIOUS_STATE/serviceId.env ]; then
       . $JOB_PREVIOUS_STATE/serviceId.env
-      EXISTING_BLUE_SERVICE_NAME=${SERVICE_NAME}${serviceId}
+      EXISTING_BLUE_SERVICE_NAME=${SERVICE_NAME}-${serviceId}
       let "serviceId++"
     else
       EXISTING_BLUE_SERVICE_NAME=${SERVICE_NAME}
       serviceId=1
     fi
 
-    GREEN_SERVICE_NAME=${SERVICE_NAME}${serviceId}
+    GREEN_SERVICE_NAME=${SERVICE_NAME}-${serviceId}
 
     pushd $REPO_DIR/specs
     export DEPLOYED_SERVICE_NAME=${GREEN_SERVICE_NAME}
