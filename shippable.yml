@@ -46,6 +46,7 @@ jobs:
             - shipctl replace taskdefinition.json
             - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
             - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
+            - export DEPLOYED_SERVICE_NAME=${SERVICE_NAME}
             - shipctl replace servicedefinition.json
             - popd
             - aws ecs create-cluster --cluster-name ${CLUSTER_NAME}
