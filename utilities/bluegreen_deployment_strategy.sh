@@ -5,6 +5,8 @@ REPO_DIR=$3
 DESIRED_TASK_COUNT=$4
 VALIDATION_TASK_SCRIPT=$5
 
+rm $JOB_PREVIOUS_STATE/serviceId.env
+
 # Generate green service name
 if [ -f $JOB_PREVIOUS_STATE/serviceId.env ]; then
   . $JOB_PREVIOUS_STATE/serviceId.env
