@@ -20,7 +20,7 @@ GREEN_SERVICE_NAME=${SERVICE_NAME}${serviceId}
 echo "Creating green service"${GREEN_SERVICE_NAME}
 aws ecs create-service --cli-input-json file://${REPO_DIR}/specs/servicedefinition.json
 retVal=$?
-if [ $retVal -neq 0 ]; then
+if [ $retVal -ne 0 ]; then
   echo "creation of green service failed"
   return $retVal
 fi
@@ -28,7 +28,7 @@ fi
 # Check status of green service
 ${REPO_DIR}/utilities/check_service_stability.sh ${CLUSTER_NAME} ${GREEN_SERVICE_NAME} ${DESIRED_TASK_COUNT} 5
 retVal=$?
-if [ $retVal -neq 0 ]; then
+if [ $retVal -ne 0 ]; then
   ${REPO_DIR}/utilities/delete_existing_ecs_service.sh ${CLUSTER_NAME} ${GREEN_SERVICE_NAME}
   return $retVal
 fi
