@@ -4,7 +4,8 @@ function bluegreen_deployment_strategy {
     SERVICE_NAME=$2
     REPO_DIR=$3
     DESIRED_TASK_COUNT=$4
-    VALIDATION_TASK_SCRIPT=$5
+    REVISION=$5
+    VALIDATION_TASK_SCRIPT=$6
 
     rm $JOB_PREVIOUS_STATE/serviceId.env
 
