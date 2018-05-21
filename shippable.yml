@@ -139,10 +139,10 @@ jobs:
             - export APP_TAG=$(shipctl get_resource_version_name node_app_img_dh)
             - shipctl replace taskdefinition.json
             - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
-            - export TASK_REVISION=$(cat output.json | jq '.taskDefinition.revision')
+            - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
             - popd
             - source ${REPO_DIR}/utilities/bluegreen_deployment_strategy.sh
-            - bluegreen_deployment_strategy ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR} ${DESIRED_TASK_COUNT} ${TASK_REVISION} ${REPO_DIR}/validate_service.sh
+            - bluegreen_deployment_strategy ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR} ${DESIRED_TASK_COUNT} ${REVISION} ${REPO_DIR}/validate_service.sh
             - retVal=$?
             - if [ $retVal -ne 0 ]; then exit 1; fi
             - GREEN_SERVICE_NAME=$(${REPO_DIR}/utilities/get_green_service_name.sh ${SERVICE_NAME})
