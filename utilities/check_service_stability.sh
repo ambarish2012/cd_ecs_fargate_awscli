@@ -26,7 +26,7 @@ function check_service_stability {
         sleep 2
     done
 
-    if [ "${SUCCESS}" -neq 0 ]; then
+    if [ "${SUCCESS}" -ne 0 ]; then
       echo "Desired count of tasks has not been reached in time specified, please check ECS service event logs for more details"
     else
       echo "Deployment is complete"
