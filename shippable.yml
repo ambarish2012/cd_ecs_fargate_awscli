@@ -140,8 +140,8 @@ jobs:
             - shipctl replace taskdefinition.json
             - aws ecs register-task-definition --cli-input-json file://${REPO_DIR}/specs/taskdefinition.json > output.json
             - export REVISION=$(cat output.json | jq '.taskDefinition.revision')
-            - popd
             - shipctl replace servicedefinition.json
+            - popd
             - source ${REPO_DIR}/utilities/bluegreen_deployment_strategy.sh
             - bluegreen_deployment_strategy ${CLUSTER_NAME} ${SERVICE_NAME} ${REPO_DIR} 1
             - retVal=$?
