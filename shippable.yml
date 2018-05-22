@@ -13,7 +13,7 @@ resources:
     integration: "drship_aws"
 
 jobs:
-  - name: deploy_app_ecs_fargate_deployment_strategy_replace
+  - name: deploy_app_ecs_fargate_deployment_strategy_replace1
     type: runSh
     steps:
       - IN: node_app_img_dh # defined here https://github.com/devops-recipes/node_app/blob/master/shippable.yml
@@ -22,7 +22,7 @@ jobs:
       - IN: cd_ecs_fargate_creds
         switch: off
       - TASK:
-          name: deployment_strategy_replace
+          name: deployment_strategy_replace1
           runtime:
             options:
               env:
@@ -62,7 +62,7 @@ jobs:
       - awscli
       - fargate
 
-  - name: deploy_app_ecs_fargate_deployment_strategy_upgrade
+  - name: deploy_app_ecs_fargate_deployment_strategy_upgrade1
     type: runSh
     steps:
       - IN: node_app_img_dh # defined here https://github.com/devops-recipes/node_app/blob/master/shippable.yml
@@ -71,7 +71,7 @@ jobs:
       - IN: cd_ecs_fargate_creds
         switch: off
       - TASK:
-          name: deployment_strategy_upgrade
+          name: deployment_strategy_upgrade1
           runtime:
             options:
               env:
@@ -108,7 +108,7 @@ jobs:
       - awscli
       - fargate
 
-  - name: deploy_app_ecs_fargate_deployment_strategy_bluegreen
+  - name: deploy_app_ecs_fargate_deployment_strategy_bluegreen1
     type: runSh
     steps:
       - IN: node_app_img_dh # defined here https://github.com/devops-recipes/node_app/blob/master/shippable.yml
@@ -117,7 +117,7 @@ jobs:
       - IN: cd_ecs_fargate_creds
         switch: off
       - TASK:
-          name: deployment_strategy_bluegreen
+          name: deployment_strategy_bluegreen1
           runtime:
             options:
               env:
